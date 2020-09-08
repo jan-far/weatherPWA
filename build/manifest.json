@@ -1,0 +1,23 @@
+{
+    "short_name": "WeatherAPPy",
+    "name": "WeatherAPPY",
+    "description": "Weather condition app: Get weather cast details of diffeerent location ",
+    "background_color": "#a52a2a",
+    "theme_color": "#a52a2a",
+    "display": "standalone",
+    "scope": "/",
+    "orientation": "portrait",
+    "start_url": "/",
+    "icons": [
+        {
+            "src": "icon/maskable_icon-192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "icon/maskable_icon-512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ]
+}

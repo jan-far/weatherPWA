@@ -1,0 +1,246 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-image: url("../img/bk.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: rgb(119, 10, 10);
+    /* background-size: contain; */
+}
+
+header {
+    display: flex;
+    padding: 10px;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+header input {
+    font-family: Arial, Helvetica, sans-serif;
+    text-transform: uppercase;
+    width: 60%;
+    text-align: center;
+    border: none;
+    background-color: lightseagreen;
+    outline: none;
+    padding: 10px 5px;
+    border-radius: 50px 0px;
+    transition: 0.4s linear;
+}
+
+input:focus {
+    background: turquoise;
+    color: black;
+    font-size: large;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+section.location {
+    margin: auto;
+    padding: 0px 0px;
+    justify-self: center;
+    align-items: center;
+    text-align: center;
+    clear: both;
+}
+
+.forecast-btn {
+    position: relative;
+    left: 45%;
+    bottom: 40px;
+    padding: 10px 15px;
+    border-radius: 0px 20px 20px 0px;
+    outline: none;
+    background-color: chocolate;
+    color: cornsilk;
+    border: ridge brown;
+    text-decoration: none;
+    /* float: left!important; */
+}
+
+.forecast-btn:hover {
+    cursor: pointer;
+    background-color: cornsilk;
+    color: brown;
+    border: crimson ridge;
+}
+
+img {
+    width: 100px;
+    height: 100px;
+}
+
+.status {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    padding: 5px;
+    color: white;
+}
+
+.city {
+    justify-self: left;
+    font-size: xx-large;
+    font-weight: bold;
+}
+
+.date {
+    font-size: smaller;
+}
+
+.temp {
+    margin-top: 10px;
+    font-size: 70px;
+    font-weight: bolder;
+    font-style: italic;
+}
+
+.data {
+    font-size: small;
+}
+
+aside.current {
+    text-align: center;
+    padding: auto;
+    font-size: large;
+}
+
+.description {
+    font-weight: bold;
+    font-size: x-small;
+}
+
+.hi-low {
+    font-weight: bold;
+    font-size: small;
+    margin-top: 15px;
+    padding: 0px 10px;
+    /* border: 0.1px dashed; */
+    background: linear-gradient(lightblue, red);
+    color: black;
+}
+
+footer {
+    /* display: flex;
+    flex-direction: column; */
+    text-align: center;
+    font-weight: bold;
+    font-size: small;
+    position: absolute;
+    background: rgb(136, 13, 13, 0.5);
+    color: white;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    padding: 10px 0px;
+    width: 100%;
+}
+
+.produced {
+    position: relative;
+    bottom: 0px;
+    align-self: center;
+}
+
+/* .blinker:before {
+    animation: blink 2s cubic-bezier(.5, 0, 1, 1) infinite alternate;
+} */
+
+@keyframes blink {
+    to {
+        opacity: 0;
+    }
+
+    0% {
+        transform: scale(1);
+    }
+
+    20% {
+        transform: scale(1.2);
+    }
+
+    40% {
+        transform: scale(1.85);
+    }
+
+    60% {
+        transform: scale(.75);
+    }
+
+    80% {
+        transform: scale(.75);
+    }
+
+    100% {
+        transform: scale(.75);
+        opacity: 0;
+    }
+}
+
+/* .beacon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background-color: #2c3e50;
+    height: 3em;
+    width: 3em;
+    border-radius: 50%;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+} */
+
+.online:after {
+    position: absolute;
+    content: "";
+    height: 2em;
+    width: 2em;
+    left: -8px;
+    top: -8px;
+    background-color: transparent;
+    border-radius: 50%;
+    box-shadow: 0px 0px 10px 10px green;
+    -webkit-animation: active 2s infinite linear;
+    animation: active 2s infinite alternate-reverse;
+}
+
+@-webkit-keyframes active {
+    0% {
+        -webkit-transform: scale(.1);
+        opacity: 1;
+    }
+
+    70% {
+        -webkit-transform: scale(2.5);
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes active {
+    0% {
+        transform: scale(.1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1);
+    }
+
+    /* 80% {
+        transform: scale(1.5);
+        opacity: 0;
+    } */
+
+    100% {
+        /* transform: scale(1); */
+        opacity: 0;
+    }
+}

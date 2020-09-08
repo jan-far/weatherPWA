@@ -1,0 +1,49 @@
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:center;
+    background-color: gray;
+}
+
+main{
+    display: flex;
+    flex-direction: column;
+}
+
+.padded{
+    text-align: center;
+    font-style: normal;
+    font-weight: bolder;
+    font-size: larger;
+}
+
+img{
+    width: 60%!important;
+    background-color: gray;
+    align-self: center;
+    justify-items: center;
+    margin-bottom: 40px;
+}
+
+a{
+    padding: 15px;
+    color: white;
+    border-radius: 50px;
+    background-color: black;
+    text-decoration: none;
+}
+
+a:hover{
+    cursor: pointer;
+    background-color: wheat;
+    color: black;
+}
+
+@media screen and (max-width: 600px){
+    img{
+        width: 80%!important;
+        margin-bottom: 30px;
+    }
+}

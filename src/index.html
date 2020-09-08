@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#a52a2a">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/pop.css">
+    <link rel="shortcut icon" href="./favicon.png" type="image">
+    <link rel="manifest" href="./manifest.json">
+    <title>WeatherAPPY</title>
+</head>
+
+<body>
+    <header>
+        <div class="status blinker"></div>
+        <h2 class="WEATHER">Weather Condition</h2>
+        <label for="search"></label>
+        <input name="search" type="text" autocomplete="off" class="search-box" placeholder="Search for a city...">
+        <a href="./pages/forecast.html" class="forecast-btn" > Forecast</a>
+    </header>
+    <main>
+        <section class="location">
+            <div class="loc"></div>
+            <div class="city"></div>
+            <div class="date"></div>
+            <div class="temp"></div>
+            <div class="data"></div>
+        </section>
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p class="model-text">Failed to fetch location resources...</br> 
+                    You may be offline, otherwise, Search for a City!</p>
+            </div>
+
+        </div>
+        <aside class="current">
+            <img id="weather_con">
+            <div class="weather"></div>
+            <div class="description"></div>
+            <div class="hi-low">
+            </div>
+        </aside>
+    </main>
+    <footer>
+        <div class="produced">Copyright &copy; Current and Forecast Weather Conditon App</div>
+    </footer>
+    <script type="module" src="./js/main.js"></script>
+    <!-- <script src="./js/network.js"></script> -->
+</body>
+
+</html>
