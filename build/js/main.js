@@ -34,10 +34,10 @@ button.onclick = () => {
 searchbox.addEventListener("keypress", (e) => {
     let val = searchbox.value
     if (e.keyCode == 13 | e.key == "Enter") {
-        location.style.display = "none"
         getResult(val);
-        forecast.style.display = ""
-        sectionLocation.style.marginTop = "-10px"
+        sectionLocation.style.marginTop = "inherit"
+        sessionStorage.setItem("city", val)
+        location.style.display = "none"
     }
 })
 
@@ -72,6 +72,7 @@ async function getResult(query) {
         } else {
             details(data)
             searchbox.value = "";
+            forecast.style.display = ""
             sessionStorage.setItem("lat", data.coord.lat);
             sessionStorage.setItem("long", data.coord.lon);
         };
@@ -80,6 +81,37 @@ async function getResult(query) {
             window.open("../pages/offline.html", "_self")
         }
     }
+}
+
+async function details(data) {
+    let city = document.querySelector(".location .city");
+    let details = document.querySelector(".location .data");
+    let description = document.querySelector(".description");
+    let weather = document.querySelector(".weather");
+    let temp = document.querySelector(".temp");
+    let tempRange = document.querySelector(".hi-low");
+
+    city.innerHTML = `${data.name}, ${data.sys.country}`
+    date(data)
+
+    let sunrise = converter(`${data.sys.sunrise}`)
+    let sunset = converter(`${data.sys.sunset}`)
+
+    details.innerHTML = `
+    <p> Sunrise: ${sunrise.getHours()}:${sunrise.getMinutes()} ||
+    Sunset: ${sunset.getHours()}:${sunset.getMinutes()} </p>
+    `
+    temp.innerHTML = `${Math.round(data.main.temp)}<span>°c</span>`;
+
+    // cloud(data.weather[0].icon);
+    weather.innerHTML = `${data.weather[0].main}`;
+    icon(data.weather[0].main);
+
+    description.innerHTML = `${data.weather[0].description}`
+
+    tempRange.innerHTML = `<p> Min Temp: ${Math.round(data.main.temp_min)}<span>°c</span> 
+    </br></br>
+    Max Temp: ${Math.round(data.main.temp_max)}<span>°c</span></p>`
 }
 
 function date(data) {
@@ -92,11 +124,11 @@ function date(data) {
     console.log(date);
 
 
-    let d = new Date();
+    // let d = new Date();
 
-    let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+    // let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
 
-    let nd = new Date(utc + (3600000 * data.timezone));
+    // let nd = new Date(utc + (3600000 * data.timezone));
 
     // console.log(u)
     // console.log(nd.toISOString())
@@ -167,9 +199,9 @@ function setPosition(position) {
             if (!data) {
                 modal.style.display = "block";
             } else {
-                details(data)
-                location.innerHTML = "Current Location:"
+                location.innerHTML = "Current Location: "
                 location.style.marginBottom = "10px"
+                details(data)
             }
         } catch (err) {
             console.log("Failed to get Weather details...!");

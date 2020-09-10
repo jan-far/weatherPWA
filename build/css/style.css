@@ -1,9 +1,14 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background-image: url("../img/bk.jpg");
+    /* position: relative; */
+    background-image: url("../img/bg3d.jpg");
     background-position: center;
     background-repeat: no-repeat;
-    background-color: rgb(119, 10, 10);
+    background-color: #000;
+    overflow: hidden;
+    color: blanchedalmond;
+    box-sizing: border-box;
+    -ms-overflow-style: none;
     /* background-size: contain; */
 }
 
@@ -50,17 +55,25 @@ section.location {
     clear: both;
 }
 
+#particles-js {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    z-index: -1;
+}
+
 .forecast-btn {
     position: relative;
     left: 45%;
     bottom: 40px;
-    padding: 10px 15px;
+    padding: 10px 10px;
     border-radius: 0px 20px 20px 0px;
     outline: none;
     background-color: chocolate;
     color: cornsilk;
     border: ridge brown;
     text-decoration: none;
+    transition: steps(1, 2);
     /* float: left!important; */
 }
 
@@ -74,6 +87,7 @@ section.location {
 img {
     width: 100px;
     height: 100px;
+    border-radius: 50px;
 }
 
 .status {
@@ -81,7 +95,7 @@ img {
     left: 10px;
     top: 10px;
     padding: 5px;
-    color: white;
+    color: white ;
 }
 
 .city {
@@ -183,17 +197,6 @@ footer {
     }
 }
 
-/* .beacon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    background-color: #2c3e50;
-    height: 3em;
-    width: 3em;
-    border-radius: 50%;
-    -webkit-transform: translateX(-50%) translateY(-50%);
-} */
-
 .online:after {
     position: absolute;
     content: "";
@@ -205,7 +208,7 @@ footer {
     border-radius: 50%;
     box-shadow: 0px 0px 10px 10px green;
     -webkit-animation: active 2s infinite linear;
-    animation: active 3s infinite alternate-reverse;
+    animation: active 2s infinite alternate;
 }
 
 @-webkit-keyframes active {

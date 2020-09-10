@@ -1,5 +1,7 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
 
+self.skipWaiting()
+
 if (workbox) {
   console.log(`Yay! Workbox is loaded 🎉`);
 
@@ -29,7 +31,7 @@ if (workbox) {
           }
         })
     },
-    "GET"
+    "GET", "POST"
   );
 
   workbox.routing.registerRoute(
@@ -62,3 +64,7 @@ if (workbox) {
 } else {
   console.log(`Boo! Workbox didn't load 😬`);
 }
+
+// self.addEventListener("fetch", (e)=>{
+//   e.re
+// })

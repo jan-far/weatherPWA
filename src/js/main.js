@@ -34,10 +34,10 @@ button.onclick = () => {
 searchbox.addEventListener("keypress", (e) => {
     let val = searchbox.value
     if (e.keyCode == 13 | e.key == "Enter") {
-        location.style.display = "none"
         getResult(val);
-        forecast.style.display = ""
-        sectionLocation.style.marginTop = "-10px"
+        sectionLocation.style.marginTop = "inherit"
+        sessionStorage.setItem("city", val)
+        location.style.display = "none"
     }
 })
 
@@ -72,6 +72,7 @@ async function getResult(query) {
         } else {
             details(data)
             searchbox.value = "";
+            forecast.style.display = ""
             sessionStorage.setItem("lat", data.coord.lat);
             sessionStorage.setItem("long", data.coord.lon);
         };
@@ -123,11 +124,11 @@ function date(data) {
     console.log(date);
 
 
-    let d = new Date();
+    // let d = new Date();
 
-    let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+    // let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
 
-    let nd = new Date(utc + (3600000 * data.timezone));
+    // let nd = new Date(utc + (3600000 * data.timezone));
 
     // console.log(u)
     // console.log(nd.toISOString())
@@ -198,9 +199,9 @@ function setPosition(position) {
             if (!data) {
                 modal.style.display = "block";
             } else {
-                details(data)
-                location.innerHTML = "Current Location:"
+                location.innerHTML = "Current Location: "
                 location.style.marginBottom = "10px"
+                details(data)
             }
         } catch (err) {
             console.log("Failed to get Weather details...!");

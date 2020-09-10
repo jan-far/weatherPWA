@@ -1,3 +1,5 @@
+import "./network.js";
+
 const api = {
     key: "83c3c5a1dbce8c1b5b91c6e58154fb96",
     baseurl: "https://api.openweathermap.org/data/2.5/"
@@ -5,8 +7,11 @@ const api = {
 
 const lat = sessionStorage.getItem("lat");
 const long = sessionStorage.getItem("long");
+const city = document.querySelector(".city");
 const city_forecast = document.querySelector(".city-forecast");
 const forecast_details = document.querySelector(".forecast-details");
+const TZ = document.querySelector(".TZ");
+const backHome = document.querySelector(".back");
 
 async function getResult() {
     try {
@@ -14,25 +19,82 @@ async function getResult() {
         const data = await res.json();
         console.log(data);
         let dated = new Date()
-        let i = 0;
+        let option = `<option value="0">select</option>`
 
-        // for (let i = 0; i < data.daily.length; i++) {
-        //     // city_forecast.innerHTML = data.daily[i].map(daily => console.log(daily))
-        //     // console.log(data.daily[i])
-        // // }
-        // data.daily.forEach(myFunction);
+        TZ.innerHTML= `TimeZone: ${data.timezone}`
+        city.innerHTML = `for ${sessionStorage.getItem("city").toUpperCase()}`
+        let i = 1;
+        for (i; i < data.daily.length; i++) {
+            let list = data.daily
+            let time = changeTimezone(converter(list[i].dt), data.timezone)
+            let result = JSON.stringify(list[i])
 
-        // function myFunction(item, i) {
-        //     if (i) {
-        //         // city_forecast.innerHTML = `<option value="${date(item.dt)}">${changeTimezone(date(item.dt), data.timezone )}</option>`
-        //     }
-        // }
-        forecast_details.innerHTML = data.daily.map(cast).join("\n");
-        
-        return data
+            option += `<option value="${i}">${time.toDateString()}</option>`
+            sessionStorage.setItem(`${i}`, ` ${result}`)
+
+        }
+
+        city_forecast.innerHTML = option;
+
+        city_forecast.onclick = () => {
+            console.log(`${city_forecast.value}`)
+            const Item = JSON.parse(sessionStorage.getItem(`${city_forecast.value}`))
+            console.log(Item)
+            forecast_details.innerHTML = cast(Item)
+        }
+
+        function cast(daily) {
+            let d = converter(daily.dt);
+            let dated = changeTimezone(d, data.timezone);
+            let sunrise = changeTimezone(converter(daily.sunrise), data.timezone);
+            let sunset = changeTimezone(converter(daily.sunset), data.timezone);
+
+            return ` 
+                <section class="detail">
+                    <div class="date">${dated.toDateString()}</div>
+                    <img src="${icon(daily.weather[0].main)}" id="weather_con" width=100px height=100px>
+                    <div class="weather">${daily.weather[0].main}</div>
+                    <div class="description">${daily.weather[0].description}</div>
+                    <div class="more_details">
+                    <div class="inline">    
+                        <dl class="feels_like">
+                        <dt> Feels Like </dt>
+                            <dd class="day">Day: ${daily.feels_like.day}<span>°c</span></dd>
+                            <dd class="eve">Evening: ${daily.feels_like.eve}<span>°c</span></dd>
+                            <dd class="morn">Morning: ${daily.feels_like.morn}<span>°c</span></dd>
+                            <dd class="nigh">Night: ${daily.feels_like.night}<span>°c</span></dd>
+                        </dl>
+                        <dl class="sun">
+                        <dt>Sun</dt>
+                            <dd class="sunrise">rise: ${sunrise.getHours()}:${sunrise.getMinutes()}</dd>
+                            <dd class="sunset">set: ${sunset.getHours()}:${sunset.getMinutes()}</dd>
+                        </dl>
+                        <dl class="temp">
+                        <dt> Temperature </dt>
+                            <dd class="day">Day: ${daily.temp.day}<span>°c</span></dd>
+                            <dd class="eve">Evening: ${daily.temp.eve}<span>°c</span></dd>
+                            <dd class="morn">Morning: ${daily.temp.morn}<span>°c</span></dd>
+                            <dd class="nigh">Night: ${daily.temp.night}<span>°c</span></dd>
+                        </dl>
+                    </div>
+                        <div class="humidity">Humidity: ${daily.humidity}%</div>
+                        <div class="pressure">Pressure: ${daily.pressure}hPa</div>
+                        <dl class="wind">
+                        <dt>Wind</dt>
+                            <dd class="wind_deg">Wind Degree: ${daily.wind_deg}<span>°</span></dd>
+                            <dd class="wind_speed">Wind Speed: ${daily.wind_speed}m/s</dd>
+                        </dl>
+                    </div>
+                    <div class="hi-low"></div>
+                </section>
+                `
+        }
     } catch (err) {
         if (navigator.onLine == false) {
             window.open("../pages/offline.html", "_self")
+        }else if (err){
+            TZ.innerHTML = ""
+            city.innerHTML = ""
         }
     }
 }
@@ -48,60 +110,23 @@ function changeTimezone(date, TZ) {
     var diff = date.getTime() - invdate.getTime();
 
     // so 12:00 in Toronto is 17:00 UTC
-    return new Date(date.getTime() - diff).toDateString();
+    return new Date(date.getTime() - diff);
 }
 
+// function date(data) {
+//     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+//     const months_arr = ['January', 'Feburary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-function date(data) {
-    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    const months_arr = ['January', 'Feburary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+//     //  var aestTime = new Date().toLocaleString("en-US", {
+//     //     timeZone: data.timezone
+//     // });
 
-    //  var aestTime = new Date().toLocaleString("en-US", {
-    //     timeZone: data.timezone
-    // });
+//     // console.log('AEST time: ' + (new Date(aestTime)).toISOString())
 
-    // console.log('AEST time: ' + (new Date(aestTime)).toISOString())
-
-    let Unixdate = data
-    const date = converter(Unixdate);
-
-    // Year
-    const year = date.getFullYear();
-
-    // Month
-    const month = months_arr[date.getMonth()];
-
-    // Day
-    const day = days[date.getDate()];
-    const day_date = date.getDate();
-
-    // Hours
-    const hours = date.getHours();
-
-    // Minutes
-    const minutes = date.getMinutes();
-
-    // Display date time in MM-dd-yyyy h:m:s format
-    const convdataTime = `${day}, ${day_date} ${month} ${year}`;
-    // // document.querySelector('.date').innerHTML = convdataTime;
-    return date
-}
-
-function cast(data) {
-    let d = converter(data.dt)
-    let dated = changeTimezone(d, getResult().timezone)
-
-    return ` 
-    <aside class="current">
-    <div class="date">${dated}</div>
-            <img src="${icon(data.weather[0].main)}" id="weather_con" width=100px height=100px>
-            <div class="weather">${data.weather[0].main}</div>
-            <div class="description">${data.weather[0].description}</div>
-            <div class="hi-low">
-            </div>
-        </aside>
-    `
-}
+//     let Unixdate = data
+//     const date = converter(Unixdate);
+//     return date
+// }
 
 function icon(condition) {
     if (condition == "Clear") {
@@ -124,9 +149,23 @@ function converter(unix) {
     return conv;
 }
 
-getResult()
+window.onload = () =>{
+    if ('serviceWorker' in navigator) {
+        getResult();
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log(`Service Worker registered! Scope: ${registration.scope}`);
+            })
+            .catch(err => {
+                console.log(`Service Worker registration failed: ${err}`);
+            });
+    }
+};
 
-var there = new Date();
-var here = changeTimezone(there, "America/Los_Angeles");
+backHome.onclick = ()=>{
+    sessionStorage.clear()
+}
+// var here = new Date();
+// var there = changeTimezone(here, "America/Los_Angeles");
 
-console.log(`Here: ${here.toString()}\nToronto: ${there.toString()}`);
+// console.log(`Here: ${here.toString()}\nToronto: ${there}`);

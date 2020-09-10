@@ -4,8 +4,7 @@ module.exports = {
     "**/*.{jpg,css,png}",
     "index.html",
     "js/*",
-    "pages/offline.html",
-    "pages/404.html"
+    "pages/*"
   ],
   "swDest": "build/sw.js",
   "swSrc": "src/sw.js",
