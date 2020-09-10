@@ -15,47 +15,49 @@
 </head>
 
 <body>
-    <header>
-        <div class="status blinker"></div>
-        <h2 class="WEATHER">Weather Condition</h2>
-        <label for="search"></label>
-        <input name="search" type="text" autocomplete="off" class="search-box" placeholder="Search for a city...">
-        <a href="./pages/forecast.html" class="forecast-btn"> Forecast</a>
-    </header>
     <div id="particles-js"></div>
-    <main>
-        <section class="location">
-            <div class="loc"></div>
-            <div class="city"></div>
-            <div class="date"></div>
-            <div class="temp"></div>
-            <div class="data"></div>
-        </section>
-        <!-- The Modal -->
-        <div id="myModal" class="modal">
+    <div class="container center">
+        <div class="notification">A new version of this app is available. Click&nbsp;<a id="reload">HERE</a>&nbsp;to update.</div>  
+        <header>
+            <div class="status blinker"></div>
+            <h2 class="WEATHER">Weather Condition</h2>
+            <label for="search"> </label>
+            <input name="search" id="search" type="text" autocomplete="off" class="search-box" placeholder="Search for a city...">
+            <a href="./pages/forecast.html" class="forecast-btn"> Forecast</a>
+        </header>
+        <main>
+            <section class="location">
+                <div class="loc"></div>
+                <div class="city"></div>
+                <div class="date"></div>
+                <div class="temp"></div>
+                <div class="data"></div>
+            </section>
+            <!-- The Modal -->
+            <div id="myModal" class="modal">
 
-            <!-- Modal content -->
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <p class="model-text">Failed to fetch location resources...</br>
-                    You may be offline, otherwise, Search for a City!</p>
-            </div>
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <p class="model-text">Failed to fetch location resources...</br>
+                        You may be offline, otherwise, Search for a City!</p>
+                </div>
 
-        </div>
-        <aside class="current">
-            <img id="weather_con">
-            <div class="weather"></div>
-            <div class="description"></div>
-            <div class="hi-low">
             </div>
-        </aside>
-    </main>
-    <footer>
-        <div class="produced">Copyright &copy; Current and Forecast Weather Conditon App</div>
-    </footer>
+            <aside class="current">
+                <img id="weather_con" alt="condition icon">
+                <div class="weather"></div>
+                <div class="description"></div>
+                <div class="hi-low"></div>
+            </aside>
+        </main>
+        <footer>
+            <div class="produced">Copyright &copy; Forecast Weather Conditon </br> MADE by Janfar</div>
+        </footer>
+    </div>
     <script type="module" src="./js/main.js"></script>
-    <script src="./js/app.js"></script>
-    <script src="./js/particles.js"></script>
+    <script src="./js/app/particles.js"></script>
+    <script src="./js/app/app.js"></script>
 </body>
 
 </html>

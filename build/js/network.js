@@ -24,7 +24,7 @@ function hasNetwork(online) {
         element.innerText = "";
         element.style.background = "green"
         element.style.borderRadius = "20px"
-        element.style.padding = "8px";
+        element.style.padding = "5px";
     } else {
         element.classList.remove("online");
         element.classList.add("offline");

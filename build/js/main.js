@@ -34,19 +34,48 @@ button.onclick = () => {
 searchbox.addEventListener("keypress", (e) => {
     let val = searchbox.value
     if (e.keyCode == 13 | e.key == "Enter") {
-        getResult(val);
-        sectionLocation.style.marginTop = "inherit"
+        getResult(val)
         sessionStorage.setItem("city", val)
-        location.style.display = "none"
     }
 })
 
+let newWorker;
+
+
 if ('serviceWorker' in navigator) {
-    getLocation();
-    window.addEventListener("load", ()=>{
+    window.addEventListener("load", () => {
+        getLocation()
         forecast.style.display = "none";
         navigator.serviceWorker.register('/sw.js')
             .then(registration => {
+                registration.addEventListener("updatefound", () => {
+                    // updated service worker has appeared in registration.installing!
+                    newWorker = registration.installing;
+                    console.log("installing")
+
+                    document.querySelector("#reload").addEventListener("click", () => {
+                        newWorker.postMessage({
+                            action: "skipWaiting"
+                        });
+                    });
+
+                    // Has service worker state changed?
+                    newWorker.addEventListener("statechange", () => {
+                        switch (newWorker.state) {
+                            case "installed":
+                                console.log("installed")
+
+
+                                // There is a new service worker available, show the notification
+                                if (navigator.serviceWorker.controller) {
+                                    let notification = document.querySelector(".notification");
+                                    notification.className = "show";
+                                    // resolve(true);
+                                }
+                                break;
+                        }
+                    });
+                });
                 console.log(`Service Worker registered! Scope: ${registration.scope}`);
             })
             .catch(err => {
@@ -55,12 +84,21 @@ if ('serviceWorker' in navigator) {
     })
 };
 
+let refreshing;
+// The event listener that is fired when the service worker updates
+navigator.serviceWorker.addEventListener('controllerchange', function () {
+    // Here, reload the page
+    if (refreshing) return;
+    window.location.reload();
+    refreshing = true;
+});
+
 async function getResult(query) {
     let val = searchbox.value
     try {
         const res = await fetch(`${api.baseurl}weather?q=${query}&appid=${api.key}&units=metric`);
         const data = await res.json();
-        console.log(data);
+        // console.log(data);
         if (data.cod == "404") {
             modelText.innerHTML = `search for "${val}" weather condition not found. "${val}" may not exist or be found on API!`
             modal.style.display = "block";
@@ -73,6 +111,8 @@ async function getResult(query) {
             details(data)
             searchbox.value = "";
             forecast.style.display = ""
+            location.style.display = "none"
+            sectionLocation.style.marginTop = "-15px"
             sessionStorage.setItem("lat", data.coord.lat);
             sessionStorage.setItem("long", data.coord.lon);
         };
@@ -121,9 +161,6 @@ function date(data) {
     let Unixdate = data.dt
     const date = converter(Unixdate);
 
-    console.log(date);
-
-
     // let d = new Date();
 
     // let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
@@ -167,15 +204,13 @@ function icon(condition) {
         weather_condition.src = "./img/clouds.png"
     } else if (condition == "snow") {
         weather_condition.src = "./img/snow.png"
-    } else if (condition == "thunder") {
+    } else if (condition == "Thunderstorm") {
         weather_condition.src = "./img/thunder storm.jpg"
     } else if (condition == "Rain") {
         weather_condition.src = "./img/rain.png"
     } else if (condition == "Haze") {
         weather_condition.src = "./img/haze.png"
     }
-
-
 }
 
 function getLocation() {
@@ -215,23 +250,7 @@ function setPosition(position) {
 
 };
 
-function changeTimezone(date, TZ) {
+// var there = new Date();
+// var here = changeTimezone(there, "America/Los_Angeles");
 
-  // suppose the date is 12:00 UTC
-  var invdate = new Date(date.toLocaleString('en-US', {
-    timeZone: TZ
-  }));
-
-  // then invdate will be 07:00 in Toronto
-  // and the diff is 5 hours
-  var diff = date.getTime() - invdate.getTime();
-
-  // so 12:00 in Toronto is 17:00 UTC
-  return new Date(date.getTime() - diff);
-}
-
-var there = new Date();
-var here = changeTimezone(there, "America/Los_Angeles");
-
-console.log(`Here: ${here.toString()}\nToronto: ${there.toString()}`);
-// console.log(here.getFullYear())
+// console.log(`Here: ${here.toString()}\nToronto: ${there.toString()}`);

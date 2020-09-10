@@ -37,10 +37,13 @@ async function getResult() {
         city_forecast.innerHTML = option;
 
         city_forecast.onclick = () => {
-            console.log(`${city_forecast.value}`)
             const Item = JSON.parse(sessionStorage.getItem(`${city_forecast.value}`))
+            if(Item == null){
+                forecast_details.innerHTML = " "
+            }else{
+                forecast_details.innerHTML = cast(Item)
+            }
             console.log(Item)
-            forecast_details.innerHTML = cast(Item)
         }
 
         function cast(daily) {
@@ -51,7 +54,7 @@ async function getResult() {
 
             return ` 
                 <section class="detail">
-                    <div class="date">${dated.toDateString()}</div>
+                    <div class="date">${dated.toLocaleString()}</div>
                     <img src="${icon(daily.weather[0].main)}" id="weather_con" width=100px height=100px>
                     <div class="weather">${daily.weather[0].main}</div>
                     <div class="description">${daily.weather[0].description}</div>
@@ -129,20 +132,23 @@ function changeTimezone(date, TZ) {
 // }
 
 function icon(condition) {
+    let weather_condition = document.querySelector("img");
+
     if (condition == "Clear") {
-        return "../img/clear.png"
+        weather_condition.src = "./img/clear.png"
     } else if (condition == "Clouds") {
-        return "../img/clouds.png"
+        weather_condition.src = "./img/clouds.png"
     } else if (condition == "snow") {
-        return "./img/snow.png"
-    } else if (condition == "thunder") {
-        return "./img/thunder storm.jpg"
+        weather_condition.src = "./img/snow.png"
+    } else if (condition == "Thunderstorm") {
+        weather_condition.src = "./img/thunder storm.jpg"
     } else if (condition == "Rain") {
-        return "../img/rain.png"
+        weather_condition.src = "./img/rain.png"
     } else if (condition == "Haze") {
-        return "./img/haze.png"
+        weather_condition.src = "./img/haze.png"
     }
 }
+
 
 function converter(unix) {
     let conv = new Date(unix * 1000)
@@ -150,8 +156,8 @@ function converter(unix) {
 }
 
 window.onload = () =>{
+    getResult();
     if ('serviceWorker' in navigator) {
-        getResult();
         navigator.serviceWorker.register('/sw.js')
             .then(registration => {
                 console.log(`Service Worker registered! Scope: ${registration.scope}`);

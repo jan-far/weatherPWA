@@ -1,11 +1,20 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
 
-self.skipWaiting()
-
 if (workbox) {
   console.log(`Yay! Workbox is loaded 🎉`);
 
   workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
+
+    workbox.routing.registerRoute(
+    /\//, new workbox.strategies.NetworkFirst({
+      cacheName: "api-cache",
+      plugins: [
+      new workbox.expiration.CacheExpiration({
+        maxEntries: 100,
+      })
+    ]
+    })
+  );
 
   const apiHandler = new workbox.strategies.NetworkFirst({
     cacheName: 'api-cache',
@@ -30,25 +39,11 @@ if (workbox) {
             return caches.match('pages/404.html');
           }
         })
-    },
-    "GET", "POST"
+    }
   );
 
   workbox.routing.registerRoute(
-    new RegExp('img\/(.*)'),
-    new workbox.strategies.CacheFirst({
-      cacheName: 'images-cache',
-      plugins: [
-        new workbox.expiration.CacheExpiration({
-          maxEntries: 50,
-          maxAgeSeconds: 15 * 24 * 60 * 60, // 15 Days
-        })
-      ]
-    })
-  );
-
-  workbox.routing.registerRoute(
-    /src\/(.*)\.(html|js)$/,
+    /src\/(.*)\.(html|js|json)$/,
     new workbox.strategies.CacheFirst({
       cacheName: 'pages-cache',
       plugins: [
@@ -59,12 +54,40 @@ if (workbox) {
       ]
     })
   );
-
-
 } else {
   console.log(`Boo! Workbox didn't load 😬`);
 }
 
-// self.addEventListener("fetch", (e)=>{
-//   e.re
-// })
+self.addEventListener("push", (event)=>{
+  if (event.data.text() == "update Available"){
+    event.waitUntil(
+      caches.open("api-cache")
+      .then(cache =>{
+        return fetch("/")
+        .then(res =>{
+          cache.put("/", res.clone());
+          return res
+        });
+      }).then(showNot)
+    )
+  }
+});
+
+const showNot = (msg)=>{
+  registration.showNotification("Update Available", {
+    tag: "update Available",
+    body: msg
+  })
+}
+
+self.addEventListener("notificationclick", event =>{
+  if(event.notification.tag == "update Available"){
+    new WindowClient("/inbox/")
+  }
+});
+
+self.addEventListener('message', function (event) {
+  if (event.data.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
+});
