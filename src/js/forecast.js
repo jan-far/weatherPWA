@@ -132,20 +132,18 @@ function changeTimezone(date, TZ) {
 // }
 
 function icon(condition) {
-    let weather_condition = document.querySelector("img");
-
     if (condition == "Clear") {
-        weather_condition.src = "./img/clear.png"
+        return "../img/clear.png"
     } else if (condition == "Clouds") {
-        weather_condition.src = "./img/clouds.png"
+        return "../img/clouds.png"
     } else if (condition == "snow") {
-        weather_condition.src = "./img/snow.png"
+        return "../img/snow.png"
     } else if (condition == "Thunderstorm") {
-        weather_condition.src = "./img/thunder storm.jpg"
+        return "../img/thunder storm.jpg"
     } else if (condition == "Rain") {
-        weather_condition.src = "./img/rain.png"
+        return "../img/rain.png"
     } else if (condition == "Haze") {
-        weather_condition.src = "./img/haze.png"
+        return "../img/haze.png"
     }
 }
 

@@ -74,14 +74,27 @@ section.location {
 }
 
 .notification{
-    /* display: none; */
-    /* display: flex; */
+    display: none;
+    flex-direction: column;
     text-align: center;
     width: 100%;
-    /* z-index: 2; */
 }
-.notification:hover{
+
+.message{
+    background-color: palevioletred;
+    width: fit-content;
+    align-self: center;
+    padding: 5px;
+    border-radius: 0px 0px 10px 10px;
+    transition: .5s ease;
+    font-size: small;
+}
+
+.message:hover{
     cursor: pointer;
+    background-color: rebeccapurple;
+    font-size: smaller;
+    transition: .1s linear;
 }
 
 .forecast-btn {
@@ -96,7 +109,6 @@ section.location {
     border: ridge brown;
     text-decoration: none;
     transition: steps(1, 2);
-    /* float: left!important; */
 }
 
 .forecast-btn:hover {
@@ -157,7 +169,6 @@ aside.current {
     font-size: small;
     margin-top: 15px;
     padding: 0px 10px;
-    /* border: 0.1px dashed; */
     background: linear-gradient(rgb(59, 117, 136), red);
     color: wheat;
 }
@@ -180,10 +191,6 @@ footer {
     bottom: 0px;
 }
 
-.show{
-    display: flex;
-    /* z-index: 1; */
-}
 /* .blinker:before {
     animation: blink 2s cubic-bezier(.5, 0, 1, 1) infinite alternate;
 } */

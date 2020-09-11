@@ -1,5 +1,4 @@
 import "./network.js";
-
 const api = {
     key: "83c3c5a1dbce8c1b5b91c6e58154fb96",
     baseurl: "https://api.openweathermap.org/data/2.5/"
@@ -12,6 +11,7 @@ const modelText = document.querySelector(".model-text")
 const location = document.querySelector(".loc");
 const sectionLocation = document.querySelector(".location");
 const forecast = document.querySelector(".forecast-btn")
+let weather_condition = document.querySelector("#weather_con")
 const span = document.getElementsByClassName("close")[0];
 
 
@@ -40,41 +40,60 @@ searchbox.addEventListener("keypress", (e) => {
 })
 
 let newWorker;
-
+let refreshing;
+let reload = document.querySelector("#reload")
+let notification = document.querySelector(".notification");
 
 if ('serviceWorker' in navigator) {
     window.addEventListener("load", () => {
         getLocation()
+        weather_condition.style.display = "none";
         forecast.style.display = "none";
+
+        // The event listener that is fired when the service worker updates
+        navigator.serviceWorker.addEventListener("controllerchange", function () {
+            // Here, reload the page
+            refreshing = true;
+            if (refreshing) return;
+            location.reload();
+        });
+
         navigator.serviceWorker.register('/sw.js')
             .then(registration => {
+
                 registration.addEventListener("updatefound", () => {
                     // updated service worker has appeared in registration.installing!
                     newWorker = registration.installing;
                     console.log("installing")
 
-                    document.querySelector("#reload").addEventListener("click", () => {
-                        newWorker.postMessage({
-                            action: "skipWaiting"
-                        });
-                    });
-
                     // Has service worker state changed?
-                    newWorker.addEventListener("statechange", () => {
-                        switch (newWorker.state) {
-                            case "installed":
-                                console.log("installed")
+                    newWorker.addEventListener("statechange", (e) => {
+                        console.log("change")
 
-                                // There is a new service worker available, show the notification
-                                if (navigator.serviceWorker.controller) {
-                                    let notification = document.querySelector(".notification");
-                                    notification.className = "show";
-                                    // resolve(true);
-                                }
-                                break;
+                        if (registration.waiting) {
+                            console.log("waiting")
+                            notification.style.display = "flex";
+
+                            reload.addEventListener("click", () => {
+                                registration.waiting.postMessage({
+                                    action: "skipWaiting"
+                                })
+                                notification.style.display = "";
+                            });
+                        };
+
+                        if (e.target.state === "installed") {
+                            console.log("installed")
                         }
+                        registration.update();
                     });
                 });
+
+                // if window client is currently controlled s
+                if (navigator.serviceWorker.controller) {
+                    // so no new service worker will activate
+                    console.log("controller")
+                };
                 console.log(`Service Worker registered! Scope: ${registration.scope}`);
             })
             .catch(err => {
@@ -82,15 +101,6 @@ if ('serviceWorker' in navigator) {
             });
     })
 };
-
-let refreshing;
-// The event listener that is fired when the service worker updates
-navigator.serviceWorker.addEventListener('controllerchange', function () {
-    // Here, reload the page
-    if (refreshing) return;
-    window.location.reload();
-    refreshing = true;
-});
 
 async function getResult(query) {
     let val = searchbox.value
@@ -109,9 +119,9 @@ async function getResult(query) {
         } else {
             details(data)
             searchbox.value = "";
-            forecast.style.display = ""
-            location.style.display = "none"
-            sectionLocation.style.marginTop = "-15px"
+            forecast.style.display = "";
+            location.style.display = "none";
+            sectionLocation.style.marginTop = "-15px";
             sessionStorage.setItem("lat", data.coord.lat);
             sessionStorage.setItem("long", data.coord.lon);
         };
@@ -148,6 +158,7 @@ async function details(data) {
 
     description.innerHTML = `${data.weather[0].description}`
 
+    weather_condition.style.display = "";
     tempRange.innerHTML = `<p> Min Temp: ${Math.round(data.main.temp_min)}<span>°c</span> 
     </br></br>
     Max Temp: ${Math.round(data.main.temp_max)}<span>°c</span></p>`
@@ -195,7 +206,7 @@ function converter(unix) {
 }
 
 function icon(condition) {
-    let weather_condition = document.querySelector("img");
+    // let weather_condition = document.querySelector("#weather_con");
 
     if (condition == "Clear") {
         weather_condition.src = "./img/clear.png"
@@ -215,8 +226,10 @@ function icon(condition) {
 function getLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(setPosition)
+        weather_condition.style.display = "";
         // console.log(navigator.geolocation.getCurrentPosition(setPosition))
     } else {
+        modal.write = "Geolocation not allowed or supported"
         console.log(" Geolocation not currently Support ")
     };
 };

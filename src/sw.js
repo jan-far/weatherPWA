@@ -58,34 +58,6 @@ if (workbox) {
   console.log(`Boo! Workbox didn't load 😬`);
 }
 
-self.addEventListener("push", (event)=>{
-  if (event.data.text() == "update Available"){
-    event.waitUntil(
-      caches.open("api-cache")
-      .then(cache =>{
-        return fetch("/")
-        .then(res =>{
-          cache.put("/", res.clone());
-          return res
-        });
-      }).then(showNot)
-    )
-  }
-});
-
-const showNot = (msg)=>{
-  registration.showNotification("Update Available", {
-    tag: "update Available",
-    body: msg
-  })
-}
-
-self.addEventListener("notificationclick", event =>{
-  if(event.notification.tag == "update Available"){
-    new WindowClient("/inbox/")
-  }
-});
-
 self.addEventListener('message', function (event) {
   if (event.data.action === 'skipWaiting') {
     self.skipWaiting();

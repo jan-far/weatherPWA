@@ -17,12 +17,17 @@
 <body>
     <div id="particles-js"></div>
     <div class="container center">
-        <div class="notification">A new version of this app is available. Click&nbsp;<a id="reload">HERE</a>&nbsp;to update.</div>  
+        <a class="notification" id="reload">
+            <div class="message">
+                Update available. Click to update.
+            </div>
+        </a>
         <header>
             <div class="status blinker"></div>
             <h2 class="WEATHER">Weather Condition</h2>
             <label for="search"> </label>
-            <input name="search" id="search" type="text" autocomplete="off" class="search-box" placeholder="Search for a city...">
+            <input name="search" id="search" type="text" autocomplete="off" class="search-box"
+                placeholder="Search for a city...">
             <a href="./pages/forecast.html" class="forecast-btn"> Forecast</a>
         </header>
         <main>
