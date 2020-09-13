@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "copyfiles": "^2.3.0",
+    "cors": "^2.8.5",
     "workbox-sw": "^5.1.3"
   }
 }

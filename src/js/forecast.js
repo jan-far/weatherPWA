@@ -1,46 +1,43 @@
 import "./network.js";
 
-const api = {
-    key: "83c3c5a1dbce8c1b5b91c6e58154fb96",
-    baseurl: "https://api.openweathermap.org/data/2.5/"
-}
+// const api = {
+//     key: "83c3c5a1dbce8c1b5b91c6e58154fb96",
+//     baseurl: "https://api.openweathermap.org/data/2.5/"
+// }
 
-const lat = sessionStorage.getItem("lat");
-const long = sessionStorage.getItem("long");
+// const lat = localStorage.getItem("lat");
+// const long = localStorage.getItem("long");
 const city = document.querySelector(".city");
 const city_forecast = document.querySelector(".city-forecast");
 const forecast_details = document.querySelector(".forecast-details");
 const TZ = document.querySelector(".TZ");
 const backHome = document.querySelector(".back");
 
-async function getResult() {
+async function getforecast() {
     try {
-        const res = await fetch(`${api.baseurl}onecall?lat=${lat}&lon=${long}&exclude=hourly,current,minutely&appid=${api.key}&units=metric`);
-        const data = await res.json();
-        console.log(data);
-        let dated = new Date()
+        let data = JSON.parse(localStorage.getItem("data"))
         let option = `<option value="0">select</option>`
-
-        TZ.innerHTML= `TimeZone: ${data.timezone}`
-        city.innerHTML = `for ${sessionStorage.getItem("city").toUpperCase()}`
+        
+        TZ.innerHTML = `TimeZone: ${data.timezone}`
+        city.innerHTML = `for ${localStorage.getItem("city").toUpperCase()}`
         let i = 1;
         for (i; i < data.daily.length; i++) {
             let list = data.daily
             let time = changeTimezone(converter(list[i].dt), data.timezone)
             let result = JSON.stringify(list[i])
-
+            
             option += `<option value="${i}">${time.toDateString()}</option>`
-            sessionStorage.setItem(`${i}`, ` ${result}`)
+            localStorage.setItem(`${i}`, ` ${result}`)
 
         }
 
         city_forecast.innerHTML = option;
 
         city_forecast.onclick = () => {
-            const Item = JSON.parse(sessionStorage.getItem(`${city_forecast.value}`))
-            if(Item == null){
+            const Item = JSON.parse(localStorage.getItem(`${city_forecast.value}`))
+            if (Item == null) {
                 forecast_details.innerHTML = " "
-            }else{
+            } else {
                 forecast_details.innerHTML = cast(Item)
             }
             console.log(Item)
@@ -53,54 +50,55 @@ async function getResult() {
             let sunset = changeTimezone(converter(daily.sunset), data.timezone);
 
             return ` 
-                <section class="detail">
-                    <div class="date">${dated.toLocaleString()}</div>
-                    <img src="${icon(daily.weather[0].main)}" id="weather_con" width=100px height=100px>
-                    <div class="weather">${daily.weather[0].main}</div>
-                    <div class="description">${daily.weather[0].description}</div>
-                    <div class="more_details">
-                    <div class="inline">    
-                        <dl class="feels_like">
-                        <dt> Feels Like </dt>
-                            <dd class="day">Day: ${daily.feels_like.day}<span>°c</span></dd>
-                            <dd class="eve">Evening: ${daily.feels_like.eve}<span>°c</span></dd>
-                            <dd class="morn">Morning: ${daily.feels_like.morn}<span>°c</span></dd>
-                            <dd class="nigh">Night: ${daily.feels_like.night}<span>°c</span></dd>
-                        </dl>
-                        <dl class="sun">
-                        <dt>Sun</dt>
-                            <dd class="sunrise">rise: ${sunrise.getHours()}:${sunrise.getMinutes()}</dd>
-                            <dd class="sunset">set: ${sunset.getHours()}:${sunset.getMinutes()}</dd>
-                        </dl>
-                        <dl class="temp">
-                        <dt> Temperature </dt>
-                            <dd class="day">Day: ${daily.temp.day}<span>°c</span></dd>
-                            <dd class="eve">Evening: ${daily.temp.eve}<span>°c</span></dd>
-                            <dd class="morn">Morning: ${daily.temp.morn}<span>°c</span></dd>
-                            <dd class="nigh">Night: ${daily.temp.night}<span>°c</span></dd>
-                        </dl>
-                    </div>
-                        <div class="humidity">Humidity: ${daily.humidity}%</div>
-                        <div class="pressure">Pressure: ${daily.pressure}hPa</div>
-                        <dl class="wind">
-                        <dt>Wind</dt>
-                            <dd class="wind_deg">Wind Degree: ${daily.wind_deg}<span>°</span></dd>
-                            <dd class="wind_speed">Wind Speed: ${daily.wind_speed}m/s</dd>
-                        </dl>
-                    </div>
-                    <div class="hi-low"></div>
-                </section>
-                `
+            <section class="detail">
+                <div class="date">${dated.toLocaleString()}</div>
+                <img src="${icon(daily.weather[0].main)}" id="weather_con" width=100px height=100px>
+                <div class="weather">${daily.weather[0].main}</div>
+                <div class="description">${daily.weather[0].description}</div>
+                <div class="more_details">
+                <div class="inline">    
+                    <dl class="feels_like">
+                    <dt> Feels Like </dt>
+                        <dd class="day">Day: ${daily.feels_like.day}<span>°c</span></dd>
+                        <dd class="eve">Evening: ${daily.feels_like.eve}<span>°c</span></dd>
+                        <dd class="morn">Morning: ${daily.feels_like.morn}<span>°c</span></dd>
+                        <dd class="nigh">Night: ${daily.feels_like.night}<span>°c</span></dd>
+                    </dl>
+                    <dl class="sun">
+                    <dt>Sun</dt>
+                        <dd class="sunrise">rise: ${sunrise.getHours()}:${sunrise.getMinutes()}</dd>
+                        <dd class="sunset">set: ${sunset.getHours()}:${sunset.getMinutes()}</dd>
+                    </dl>
+                    <dl class="temp">
+                    <dt> Temperature </dt>
+                        <dd class="day">Day: ${daily.temp.day}<span>°c</span></dd>
+                        <dd class="eve">Evening: ${daily.temp.eve}<span>°c</span></dd>
+                        <dd class="morn">Morning: ${daily.temp.morn}<span>°c</span></dd>
+                        <dd class="nigh">Night: ${daily.temp.night}<span>°c</span></dd>
+                    </dl>
+                </div>
+                    <div class="humidity">Humidity: ${daily.humidity}%</div>
+                    <div class="pressure">Pressure: ${daily.pressure}hPa</div>
+                    <dl class="wind">
+                    <dt>Wind</dt>
+                        <dd class="wind_deg">Wind Degree: ${daily.wind_deg}<span>°</span></dd>
+                        <dd class="wind_speed">Wind Speed: ${daily.wind_speed}m/s</dd>
+                    </dl>
+                </div>
+                <div class="hi-low"></div>
+            </section>
+            `
         }
     } catch (err) {
         if (navigator.onLine == false) {
             window.open("../pages/offline.html", "_self")
-        }else if (err){
+        } else if (err) {
             TZ.innerHTML = ""
             city.innerHTML = ""
         }
     }
 }
+
 
 function changeTimezone(date, TZ) {
 
@@ -147,14 +145,13 @@ function icon(condition) {
     }
 }
 
-
 function converter(unix) {
     let conv = new Date(unix * 1000)
     return conv;
 }
 
-window.onload = () =>{
-    getResult();
+window.onload = () => {
+    getforecast();
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js')
             .then(registration => {
@@ -166,8 +163,8 @@ window.onload = () =>{
     }
 };
 
-backHome.onclick = ()=>{
-    sessionStorage.clear()
+backHome.onclick = () => {
+    localStorage.clear()
 }
 // var here = new Date();
 // var there = changeTimezone(here, "America/Los_Angeles");

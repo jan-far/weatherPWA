@@ -1,4 +1,6 @@
 import "./network.js";
+// import fore from "./getforecast.js"
+
 const api = {
     key: "83c3c5a1dbce8c1b5b91c6e58154fb96",
     baseurl: "https://api.openweathermap.org/data/2.5/"
@@ -13,7 +15,10 @@ const sectionLocation = document.querySelector(".location");
 const forecast = document.querySelector(".forecast-btn")
 let weather_condition = document.querySelector("#weather_con")
 const span = document.getElementsByClassName("close")[0];
-
+let newWorker;
+let refreshing;
+let reload = document.querySelector("#reload")
+let notification = document.querySelector(".notification");
 
 span.onclick = function () {
     modal.style.display = "none";
@@ -31,75 +36,73 @@ button.onclick = () => {
     window.open("../pages/forecast.html", "__self")
 };
 
+window.onload = ()=>{
+    getLocation();
+    weather_condition.style.display = "none";
+    forecast.style.display = "none";
+}
+
 searchbox.addEventListener("keypress", (e) => {
     let val = searchbox.value
     if (e.keyCode == 13 | e.key == "Enter") {
         getResult(val)
-        sessionStorage.setItem("city", val)
+        localStorage.setItem("city", val);
+        window.onload = ""
     }
 })
 
-let newWorker;
-let refreshing;
-let reload = document.querySelector("#reload")
-let notification = document.querySelector(".notification");
-
 if ('serviceWorker' in navigator) {
-    window.addEventListener("load", () => {
-        getLocation()
-        weather_condition.style.display = "none";
-        forecast.style.display = "none";
+    getLocation();
 
-        // The event listener that is fired when the service worker updates
-        navigator.serviceWorker.addEventListener("controllerchange", function () {
-            // Here, reload the page
-            refreshing = true;
-            if (refreshing) return;
-            location.reload();
-        });
+    // The event listener that is fired when the service worker updates
+    navigator.serviceWorker.addEventListener("controllerchange", function () {
+        // Here, reload the page
+        refreshing = true;
+        if (refreshing) return;
+        window.location.reload();
+    });
 
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
+    navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
 
-                registration.addEventListener("updatefound", () => {
-                    // updated service worker has appeared in registration.installing!
-                    newWorker = registration.installing;
-                    console.log("installing")
+            registration.addEventListener("updatefound", () => {
+                // updated service worker has appeared in registration.installing!
+                newWorker = registration.installing;
+                console.log("installing")
 
-                    // Has service worker state changed?
-                    newWorker.addEventListener("statechange", (e) => {
-                        console.log("change")
+                // Has service worker state changed?
+                newWorker.addEventListener("statechange", (e) => {
+                    console.log("change")
 
-                        if (registration.waiting) {
-                            console.log("waiting")
-                            notification.style.display = "flex";
+                    if (e.target.state === "waiting") {
+                        console.log("waiting")
+                        notification.style.display = "flex";
 
-                            reload.addEventListener("click", () => {
-                                registration.waiting.postMessage({
-                                    action: "skipWaiting"
-                                })
-                                notification.style.display = "";
-                            });
-                        };
+                        reload.addEventListener("click", () => {
+                            registration.waiting.postMessage({
+                                action: "skipWaiting"
+                            })
+                            notification.style.display = "";
+                            // registration.update();
+                        });
+                    };
 
-                        if (e.target.state === "installed") {
-                            console.log("installed")
-                        }
-                        registration.update();
-                    });
+                    if (e.target.state === "installed") {
+                        console.log("installed")
+                    }
                 });
-
-                // if window client is currently controlled s
-                if (navigator.serviceWorker.controller) {
-                    // so no new service worker will activate
-                    console.log("controller")
-                };
-                console.log(`Service Worker registered! Scope: ${registration.scope}`);
-            })
-            .catch(err => {
-                console.log(`Service Worker registration failed: ${err}`);
             });
-    })
+
+            // if window client is currently controlled s
+            if (navigator.serviceWorker.controller) {
+                // so no new service worker will activate
+                console.log("controller")
+            };
+            console.log(`Service Worker registered! Scope: ${registration.scope}`);
+        })
+        .catch(err => {
+            console.log(`Service Worker registration failed: ${err}`);
+        });
 };
 
 async function getResult(query) {
@@ -107,30 +110,52 @@ async function getResult(query) {
     try {
         const res = await fetch(`${api.baseurl}weather?q=${query}&appid=${api.key}&units=metric`);
         const data = await res.json();
-        // console.log(data);
-        if (data.cod == "404") {
+
+        if (data.cod == "400" || data.cod == "404") {
             modelText.innerHTML = `search for "${val}" weather condition not found. "${val}" may not exist or be found on API!`
             modal.style.display = "block";
             searchbox.value = "";
-        } else if (data.cod == "400" || searchbox.value == new RegExp("/\s/")) {
+        } else if (data.cod == "400" || data.cod == "404" || searchbox.value == new RegExp("/\s/")) {
             modelText.innerHTML = `Enter a city! </br> "City" search cannot be blank! </br></br> Search for " " is INVALID!`
             modal.style.display = "block";
             searchbox.value = "";
         } else {
+            sessionStorage.setItem("result", JSON.stringify(data));
             details(data)
             searchbox.value = "";
             forecast.style.display = "";
             location.style.display = "none";
             sectionLocation.style.marginTop = "-15px";
-            sessionStorage.setItem("lat", data.coord.lat);
-            sessionStorage.setItem("long", data.coord.lon);
-        };
+            localStorage.setItem("lat", data.coord.lat);
+            localStorage.setItem("long", data.coord.lon);
+        }
+
+        const dataSaved = JSON.parse(sessionStorage.getItem("result"))
+        // console.log(data)
+        const resp = await fetch(`${api.baseurl}onecall?lat=${dataSaved.coord.lat}&lon=${dataSaved.coord.lon}&exclude=hourly,current,minutely&appid=${api.key}&units=metric`);
+        const datas = await resp.json();
+        localStorage.setItem("data", JSON.stringify(datas));
+
+        // const res = await fetch(`${api.baseurl}weather?q=${query}&appid=${api.key}&units=metric`);
+        // const data = await res.json();
+        // console.log(data);
+        // if (data.cod == "404") {
+        //     modelText.innerHTML = `search for "${val}" weather condition not found. "${val}" may not exist or be found on API!`
+        //     modal.style.display = "block";
+        //     searchbox.value = "";
+        // } else if (data.cod == "400" || searchbox.value == new RegExp("/\s/")) {
+        //     modelText.innerHTML = `Enter a city! </br> "City" search cannot be blank! </br></br> Search for " " is INVALID!`
+        //     modal.style.display = "block";
+        //     searchbox.value = "";
+        // } else {
+
+        // };
     } catch (err) {
         if (navigator.onLine == false) {
             window.open("../pages/offline.html", "_self")
         }
     }
-}
+};
 
 async function details(data) {
     let city = document.querySelector(".location .city");
