@@ -1,8 +1,6 @@
 const express = require('express');
 const app = express();
-const cors = require("cors")
 
-// app.use(cors);
 // This serves static files from the specified directory
 app.use(express.static(__dirname + '/build/'));
 
