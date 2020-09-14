@@ -36,7 +36,7 @@ button.onclick = () => {
     window.open("../pages/forecast.html", "__self")
 };
 
-window.onload = ()=>{
+window.onload = () => {
     getLocation();
     weather_condition.style.display = "none";
     forecast.style.display = "none";
@@ -52,13 +52,14 @@ searchbox.addEventListener("keypress", (e) => {
 })
 
 if ('serviceWorker' in navigator) {
-    getLocation();
+    // getLocation();
 
     // The event listener that is fired when the service worker updates
     navigator.serviceWorker.addEventListener("controllerchange", function () {
         // Here, reload the page
         refreshing = true;
         if (refreshing) return;
+        console.log("controller change")
         window.location.reload();
     });
 
@@ -74,30 +75,31 @@ if ('serviceWorker' in navigator) {
                 newWorker.addEventListener("statechange", (e) => {
                     console.log("change")
 
-                    if (e.target.state === "waiting") {
+                    notification.style.display = "";
+
+                    if (e.target.state === "installed") {
+                        console.log("installed")
+                    }
+
+                    // if window client is currently controlled by new service worker
+                    if (navigator.serviceWorker.controller) {
+                        console.log("controller")
+                    };
+
+                    if (registration.waiting) {
                         console.log("waiting")
                         notification.style.display = "flex";
-
                         reload.addEventListener("click", () => {
                             registration.waiting.postMessage({
                                 action: "skipWaiting"
                             })
                             notification.style.display = "";
-                            // registration.update();
+                            registration.update();
                         });
                     };
 
-                    if (e.target.state === "installed") {
-                        console.log("installed")
-                    }
                 });
             });
-
-            // if window client is currently controlled s
-            if (navigator.serviceWorker.controller) {
-                // so no new service worker will activate
-                console.log("controller")
-            };
             console.log(`Service Worker registered! Scope: ${registration.scope}`);
         })
         .catch(err => {

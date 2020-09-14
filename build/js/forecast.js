@@ -1,12 +1,5 @@
 import "./network.js";
 
-// const api = {
-//     key: "83c3c5a1dbce8c1b5b91c6e58154fb96",
-//     baseurl: "https://api.openweathermap.org/data/2.5/"
-// }
-
-// const lat = localStorage.getItem("lat");
-// const long = localStorage.getItem("long");
 const city = document.querySelector(".city");
 const city_forecast = document.querySelector(".city-forecast");
 const forecast_details = document.querySelector(".forecast-details");
@@ -17,7 +10,7 @@ async function getforecast() {
     try {
         let data = JSON.parse(localStorage.getItem("data"))
         let option = `<option value="0">select</option>`
-        
+
         TZ.innerHTML = `TimeZone: ${data.timezone}`
         city.innerHTML = `for ${localStorage.getItem("city").toUpperCase()}`
         let i = 1;
@@ -25,7 +18,7 @@ async function getforecast() {
             let list = data.daily
             let time = changeTimezone(converter(list[i].dt), data.timezone)
             let result = JSON.stringify(list[i])
-            
+
             option += `<option value="${i}">${time.toDateString()}</option>`
             localStorage.setItem(`${i}`, ` ${result}`)
 
@@ -33,7 +26,8 @@ async function getforecast() {
 
         city_forecast.innerHTML = option;
 
-        city_forecast.onclick = () => {
+        city_forecast.addEventListener("click", () => {
+            console.log("option clicked")
             const Item = JSON.parse(localStorage.getItem(`${city_forecast.value}`))
             if (Item == null) {
                 forecast_details.innerHTML = " "
@@ -41,7 +35,7 @@ async function getforecast() {
                 forecast_details.innerHTML = cast(Item)
             }
             console.log(Item)
-        }
+        })
 
         function cast(daily) {
             let d = converter(daily.dt);
@@ -113,21 +107,6 @@ function changeTimezone(date, TZ) {
     // so 12:00 in Toronto is 17:00 UTC
     return new Date(date.getTime() - diff);
 }
-
-// function date(data) {
-//     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-//     const months_arr = ['January', 'Feburary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-//     //  var aestTime = new Date().toLocaleString("en-US", {
-//     //     timeZone: data.timezone
-//     // });
-
-//     // console.log('AEST time: ' + (new Date(aestTime)).toISOString())
-
-//     let Unixdate = data
-//     const date = converter(Unixdate);
-//     return date
-// }
 
 function icon(condition) {
     if (condition == "Clear") {

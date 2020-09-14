@@ -21,6 +21,7 @@ body {
     -ms-overflow-style: none;
     background-size: cover;
     align-items: center;
+    justify-items: center;
 }
 
 header {
@@ -40,7 +41,7 @@ header input {
     background-color: lightseagreen;
     outline: none;
     padding: 10px 5px;
-    border-radius: 50px 0px;
+    border-radius: 50px;
     transition: 0.4s linear;
 }
 
@@ -73,14 +74,14 @@ section.location {
     z-index: -1;
 }
 
-.notification{
+.notification {
     display: none;
     flex-direction: column;
     text-align: center;
     width: 100%;
 }
 
-.message{
+.message {
     background-color: palevioletred;
     width: fit-content;
     align-self: center;
@@ -90,7 +91,7 @@ section.location {
     font-size: small;
 }
 
-.message:hover{
+.message:hover {
     cursor: pointer;
     background-color: rebeccapurple;
     font-size: smaller;
@@ -99,7 +100,7 @@ section.location {
 
 .forecast-btn {
     position: relative;
-    left: 45%;
+    left: 40%;
     bottom: 40px;
     padding: 10px 10px;
     border-radius: 0px 20px 20px 0px;
@@ -108,7 +109,6 @@ section.location {
     color: cornsilk;
     border: ridge brown;
     text-decoration: none;
-    transition: steps(1, 2);
 }
 
 .forecast-btn:hover {
@@ -272,14 +272,29 @@ footer {
     }
 }
 
-@media screen and (min-width: 763px) {
+@media screen and (max-width: 763px) {
     .produced {
-    background-color: rgb(63, 6, 63, 0.5);
-    font-size: small;
-    align-content: center;
-    padding: 5px;
-    border-radius: 10px 10px 0px 0px;
-    bottom: 0px;
-    margin-bottom: 0px;
-}
+        background-color: rgb(63, 6, 63, 0.5);
+        font-size: small;
+        align-content: center;
+        padding: 5px;
+        border-radius: 10px 10px 0px 0px;
+        bottom: 0px;
+        margin-bottom: 0px;
+    }
+
+    .forecast-btn {
+        position: relative;
+        left: 35%;
+        bottom: 40px;
+        padding: 8px 8px;
+        border-radius: 0px 20px 20px 0px;
+    }
+
+    header input {
+        width: 40%;
+        text-align: center;
+        background-color: lightseagreen;
+        padding: 10px 5px;
+    }
 }
