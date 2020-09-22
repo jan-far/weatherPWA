@@ -26,8 +26,7 @@ async function getforecast() {
 
         city_forecast.innerHTML = option;
 
-        city_forecast.addEventListener("click", () => {
-            console.log("option clicked")
+        city_forecast.addEventListener("change", () => {
             const Item = JSON.parse(localStorage.getItem(`${city_forecast.value}`))
             if (Item == null) {
                 forecast_details.innerHTML = " "
